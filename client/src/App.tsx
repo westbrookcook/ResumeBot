@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import ResumeForm from './components/ResumeForm';
 
 function App() {
   return (
@@ -8,6 +9,9 @@ function App() {
         <h1>ResumeBot</h1>
         <p>AI-Powered Resume Generator</p>
       </header>
+      <main>
+        <ResumeForm />
+      </main>
     </div>
   );
 }
