@@ -64,6 +64,22 @@ const ResumeForm: React.FC = () => {
     }));
   };
 
+  const updateWorkExperience = (index: number, field: keyof WorkExperience, value: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      workExperience: prev.workExperience.map((exp, i) =>
+        i === index ? { ...exp, [field]: value } : exp
+      )
+    }));
+  };
+
+  const removeWorkExperience = (index: number) => {
+    setResumeData(prev => ({
+      ...prev,
+      workExperience: prev.workExperience.filter((_, i) => i !== index)
+    }));
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Resume Data:', resumeData);
@@ -114,9 +130,67 @@ const ResumeForm: React.FC = () => {
           </div>
         </section>
 
-        <button type="button" onClick={addWorkExperience} className="add-btn">
-          Add Work Experience
-        </button>
+        <section className="work-experience">
+          <h3>Work Experience</h3>
+          {resumeData.workExperience.map((exp, index) => (
+            <div key={index} className="experience-item">
+              <div className="form-group">
+                <label>Company</label>
+                <input
+                  type="text"
+                  value={exp.company}
+                  onChange={(e) => updateWorkExperience(index, 'company', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Position</label>
+                <input
+                  type="text"
+                  value={exp.position}
+                  onChange={(e) => updateWorkExperience(index, 'position', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-row">
+                <div className="form-group">
+                  <label>Start Date</label>
+                  <input
+                    type="month"
+                    value={exp.startDate}
+                    onChange={(e) => updateWorkExperience(index, 'startDate', e.target.value)}
+                    required
+                  />
+                </div>
+                <div className="form-group">
+                  <label>End Date</label>
+                  <input
+                    type="month"
+                    value={exp.endDate}
+                    onChange={(e) => updateWorkExperience(index, 'endDate', e.target.value)}
+                    placeholder="Current"
+                  />
+                </div>
+              </div>
+              <div className="form-group">
+                <label>Description</label>
+                <textarea
+                  value={exp.description}
+                  onChange={(e) => updateWorkExperience(index, 'description', e.target.value)}
+                  rows={4}
+                  placeholder="Describe your responsibilities and achievements..."
+                  required
+                />
+              </div>
+              <button type="button" onClick={() => removeWorkExperience(index)} className="remove-btn">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addWorkExperience} className="add-btn">
+            Add Work Experience
+          </button>
+        </section>
 
         <button type="submit" className="generate-btn">
           Generate Resume
