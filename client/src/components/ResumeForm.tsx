@@ -80,9 +80,45 @@ const ResumeForm: React.FC = () => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [generatedResume, setGeneratedResume] = useState<any>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Resume Data:', resumeData);
+    setIsGenerating(true);
+
+    try {
+      const response = await fetch('http://localhost:5000/api/resume/generate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(resumeData)
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        setGeneratedResume(result.resume);
+      } else {
+        alert('Error generating resume: ' + result.error);
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to generate resume. Please try again.');
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
+  const downloadResume = (resume: any) => {
+    const element = document.createElement('a');
+    const file = new Blob([resume.formattedContent], { type: 'text/plain' });
+    element.href = URL.createObjectURL(file);
+    element.download = `${resume.personalInfo.name.replace(/\s+/g, '_')}_Resume.txt`;
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
   };
 
   return (
@@ -192,10 +228,24 @@ const ResumeForm: React.FC = () => {
           </button>
         </section>
 
-        <button type="submit" className="generate-btn">
-          Generate Resume
+        <button type="submit" className="generate-btn" disabled={isGenerating}>
+          {isGenerating ? 'Generating...' : 'Generate Resume'}
         </button>
       </form>
+
+      {generatedResume && (
+        <section className="resume-preview">
+          <h3>Generated Resume Preview</h3>
+          <div className="preview-content">
+            <pre>{generatedResume.formattedContent}</pre>
+          </div>
+          <div className="preview-actions">
+            <button className="download-btn" onClick={() => downloadResume(generatedResume)}>
+              Download Resume
+            </button>
+          </div>
+        </section>
+      )}
     </div>
   );
 };
