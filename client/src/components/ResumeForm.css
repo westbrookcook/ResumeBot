@@ -12,7 +12,7 @@
   margin-bottom: 30px;
 }
 
-.personal-info, .work-experience {
+.personal-info, .work-experience, .education {
   margin-bottom: 30px;
   padding: 20px;
   background: white;
@@ -20,14 +20,14 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.personal-info h3, .work-experience h3 {
+.personal-info h3, .work-experience h3, .education h3 {
   margin-top: 0;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
   padding-bottom: 10px;
 }
 
-.experience-item {
+.experience-item, .education-item {
   border: 1px solid #e9ecef;
   border-radius: 6px;
   padding: 20px;

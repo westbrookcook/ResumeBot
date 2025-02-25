@@ -74,6 +74,14 @@ function formatResumeContent(resume) {
     });
   }
 
+  if (resume.education.length > 0) {
+    content += `EDUCATION\n`;
+    resume.education.forEach(edu => {
+      content += `${edu.degree}\n`;
+      content += `${edu.school}, ${edu.graduationYear}\n\n`;
+    });
+  }
+
   return content;
 }
 

@@ -80,6 +80,32 @@ const ResumeForm: React.FC = () => {
     }));
   };
 
+  const addEducation = () => {
+    setResumeData(prev => ({
+      ...prev,
+      education: [
+        ...prev.education,
+        { school: '', degree: '', graduationYear: '' }
+      ]
+    }));
+  };
+
+  const updateEducation = (index: number, field: keyof Education, value: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      education: prev.education.map((edu, i) =>
+        i === index ? { ...edu, [field]: value } : edu
+      )
+    }));
+  };
+
+  const removeEducation = (index: number) => {
+    setResumeData(prev => ({
+      ...prev,
+      education: prev.education.filter((_, i) => i !== index)
+    }));
+  };
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResume, setGeneratedResume] = useState<any>(null);
 
@@ -225,6 +251,50 @@ const ResumeForm: React.FC = () => {
           ))}
           <button type="button" onClick={addWorkExperience} className="add-btn">
             Add Work Experience
+          </button>
+        </section>
+
+        <section className="education">
+          <h3>Education</h3>
+          {resumeData.education.map((edu, index) => (
+            <div key={index} className="education-item">
+              <div className="form-group">
+                <label>School/University</label>
+                <input
+                  type="text"
+                  value={edu.school}
+                  onChange={(e) => updateEducation(index, 'school', e.target.value)}
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Degree</label>
+                <input
+                  type="text"
+                  value={edu.degree}
+                  onChange={(e) => updateEducation(index, 'degree', e.target.value)}
+                  placeholder="Bachelor of Science in Computer Science"
+                  required
+                />
+              </div>
+              <div className="form-group">
+                <label>Graduation Year</label>
+                <input
+                  type="number"
+                  value={edu.graduationYear}
+                  onChange={(e) => updateEducation(index, 'graduationYear', e.target.value)}
+                  min="1950"
+                  max="2030"
+                  required
+                />
+              </div>
+              <button type="button" onClick={() => removeEducation(index)} className="remove-btn">
+                Remove
+              </button>
+            </div>
+          ))}
+          <button type="button" onClick={addEducation} className="add-btn">
+            Add Education
           </button>
         </section>
 
