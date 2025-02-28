@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const openaiService = require('../services/openaiService');
 
 // Generate resume based on form data
 router.post('/generate', async (req, res) => {
@@ -13,20 +14,30 @@ router.post('/generate', async (req, res) => {
       });
     }
 
-    // Basic resume template generation
-    const resume = {
-      id: Date.now(),
+    // Get AI enhancements
+    const aiEnhancements = await openaiService.enhanceResumeContent({
       personalInfo,
       workExperience,
       education,
-      skills,
+      skills
+    });
+
+    // Basic resume template generation with AI enhancements
+    const resume = {
+      id: Date.now(),
+      personalInfo: {
+        ...personalInfo,
+        summary: aiEnhancements.summary || personalInfo.summary
+      },
+      workExperience,
+      education,
+      skills: skills.length > 0 ? skills : aiEnhancements.suggestedSkills,
+      aiSuggestions: aiEnhancements,
       createdAt: new Date().toISOString()
     };
 
-    // TODO: Integrate with AI for content enhancement
     const enhancedResume = {
       ...resume,
-      summary: generateSummary(personalInfo, workExperience),
       formattedContent: formatResumeContent(resume)
     };
 
@@ -39,6 +50,37 @@ router.post('/generate', async (req, res) => {
     console.error('Resume generation error:', error);
     res.status(500).json({
       error: 'Failed to generate resume',
+      details: error.message
+    });
+  }
+});
+
+// Get AI suggestions for resume content
+router.post('/suggestions', async (req, res) => {
+  try {
+    const { personalInfo, workExperience } = req.body;
+
+    if (!personalInfo?.name) {
+      return res.status(400).json({
+        error: 'Personal information is required for suggestions'
+      });
+    }
+
+    const suggestions = await openaiService.enhanceResumeContent({
+      personalInfo,
+      workExperience: workExperience || [],
+      education: [],
+      skills: []
+    });
+
+    res.json({
+      success: true,
+      suggestions
+    });
+  } catch (error) {
+    console.error('Suggestions error:', error);
+    res.status(500).json({
+      error: 'Failed to get suggestions',
       details: error.message
     });
   }
@@ -61,8 +103,10 @@ function formatResumeContent(resume) {
   content += `${resume.personalInfo.email} | ${resume.personalInfo.phone}\n`;
   content += `${resume.personalInfo.location}\n\n`;
 
-  if (resume.personalInfo.summary) {
-    content += `SUMMARY\n${resume.personalInfo.summary}\n\n`;
+  // Use AI-generated summary or user-provided summary
+  const summary = resume.personalInfo.summary || resume.aiSuggestions?.summary;
+  if (summary) {
+    content += `PROFESSIONAL SUMMARY\n${summary}\n\n`;
   }
 
   if (resume.workExperience.length > 0) {
@@ -80,6 +124,11 @@ function formatResumeContent(resume) {
       content += `${edu.degree}\n`;
       content += `${edu.school}, ${edu.graduationYear}\n\n`;
     });
+  }
+
+  if (resume.skills && resume.skills.length > 0) {
+    content += `SKILLS\n`;
+    content += resume.skills.join(' • ') + '\n\n';
   }
 
   return content;
