@@ -106,6 +106,32 @@ const ResumeForm: React.FC = () => {
     }));
   };
 
+  const [skillInput, setSkillInput] = useState('');
+
+  const addSkill = () => {
+    if (skillInput.trim() && !resumeData.skills.includes(skillInput.trim())) {
+      setResumeData(prev => ({
+        ...prev,
+        skills: [...prev.skills, skillInput.trim()]
+      }));
+      setSkillInput('');
+    }
+  };
+
+  const removeSkill = (skillToRemove: string) => {
+    setResumeData(prev => ({
+      ...prev,
+      skills: prev.skills.filter(skill => skill !== skillToRemove)
+    }));
+  };
+
+  const handleSkillKeyPress = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      addSkill();
+    }
+  };
+
   const [isGenerating, setIsGenerating] = useState(false);
   const [generatedResume, setGeneratedResume] = useState<any>(null);
 
@@ -296,6 +322,38 @@ const ResumeForm: React.FC = () => {
           <button type="button" onClick={addEducation} className="add-btn">
             Add Education
           </button>
+        </section>
+
+        <section className="skills">
+          <h3>Skills</h3>
+          <div className="skills-input">
+            <input
+              type="text"
+              value={skillInput}
+              onChange={(e) => setSkillInput(e.target.value)}
+              onKeyPress={handleSkillKeyPress}
+              placeholder="Add a skill and press Enter"
+              className="skill-input"
+            />
+            <button type="button" onClick={addSkill} className="add-skill-btn">
+              Add Skill
+            </button>
+          </div>
+          <div className="skills-list">
+            {resumeData.skills.map((skill, index) => (
+              <div key={index} className="skill-tag">
+                <span>{skill}</span>
+                <button
+                  type="button"
+                  onClick={() => removeSkill(skill)}
+                  className="skill-remove"
+                  aria-label={`Remove ${skill}`}
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         </section>
 
         <button type="submit" className="generate-btn" disabled={isGenerating}>

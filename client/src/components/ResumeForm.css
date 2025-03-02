@@ -12,7 +12,7 @@
   margin-bottom: 30px;
 }
 
-.personal-info, .work-experience, .education {
+.personal-info, .work-experience, .education, .skills {
   margin-bottom: 30px;
   padding: 20px;
   background: white;
@@ -20,7 +20,7 @@
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.personal-info h3, .work-experience h3, .education h3 {
+.personal-info h3, .work-experience h3, .education h3, .skills h3 {
   margin-top: 0;
   color: #495057;
   border-bottom: 2px solid #dee2e6;
@@ -163,4 +163,68 @@
 
 .download-btn:hover {
   background-color: #138496;
+}
+
+/* Skills Section */
+.skills-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.skill-input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 16px;
+}
+
+.add-skill-btn {
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.add-skill-btn:hover {
+  background-color: #218838;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.skill-tag {
+  display: inline-flex;
+  align-items: center;
+  background-color: #e9ecef;
+  border: 1px solid #ced4da;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 14px;
+  gap: 8px;
+}
+
+.skill-remove {
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  padding: 0;
+  margin-left: 5px;
+}
+
+.skill-remove:hover {
+  color: #dc3545;
 }
